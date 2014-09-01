@@ -1,0 +1,66 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.6
+version = '1.0.0'
+group = 'org.gw'
+description = 'Component which allows simple logging of Objects. It can also read the Objects that it has logged.'
+
+repositories {
+    maven {
+        url "/Users/gman/.m2/repository"
+    }
+    mavenCentral()
+}
+
+configurations {
+    javaAgentAspectjWeaver
+}
+
+dependencies {
+    compile 'org.gw:commons-utils:1.0.0'
+    compile 'org.slf4j:slf4j-api:1.6.6'
+    compile 'commons-io:commons-io:2.4'
+    compile 'org.springframework:spring-context:4.0.6.RELEASE'
+    compile 'org.springframework:spring-beans:4.0.6.RELEASE'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.2.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+    testCompile 'org.gw:commons-aspects:1.0.0'
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+    testCompile 'org.springframework:spring-test:4.0.6.RELEASE'
+    testCompile 'org.aspectj:aspectjrt:1.8.1'
+    javaAgentAspectjWeaver "org.aspectj:aspectjweaver:1.8.1"
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Object Logger', 'Implementation-Version': version
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+        }
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from 'build/docs/javadoc'
+}
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+test.doFirst {
+    jvmArgs "-javaagent:${configurations.javaAgentAspectjWeaver.asPath}"
+}

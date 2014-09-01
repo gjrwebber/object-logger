@@ -1,0 +1,15 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+
+    <weaver options="-showWeaveInfo -verbose -Xset:weaveJavaxPackages=true">
+        <exclude within="*CGLIB*" />
+         <include within="org.gw.objectlogger..*" />
+        
+        <include within="org.gw.commons.aspects.TimeShiftAspect" />
+    </weaver>
+
+    <aspects>
+        <aspect name="org.gw.commons.aspects.TimeShiftAspect" />
+    </aspects>
+
+</aspectj>
